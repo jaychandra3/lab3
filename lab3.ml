@@ -211,9 +211,7 @@ are of different lengths.)
 ......................................................................*)
 
 let rec zip (x : 'a list) (y : 'a list) : ('a * 'a) list =
-  match x, y with
-  | [], [] -> []
-  | xhd :: xtl, yhd :: ytl -> (xhd, yhd) :: (zip xtl ytl) ;;
+  failwith "interesting"
 
 (*......................................................................
 Exercise 11: Partitioning a list -- Given a boolean function, say
