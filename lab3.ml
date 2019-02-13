@@ -43,7 +43,8 @@ expression.
 ......................................................................*)
 
 let add_point_pair (p1 : point_pair) (p2 : point_pair) : point_pair =
-  failwith "add_point_pair not impemented" ;;
+  let (x1, y1), (x2, y2) = p1, p2 in
+  (x1 + x2, y1 + y2) ;;
 
 (* Analogously, we can define a point by using a record to package up
 the x and y coordinates. *)
@@ -57,8 +58,8 @@ Implement a function add_point_recd to add two points of type
 point_recd and returning a point _rec as well.
 ......................................................................*)
 
-let add_point_recd =
-  fun _ -> failwith "add_point_recd not implemented" ;;
+let add_point_recd (p1 : point_recd) (p2 : point_recd) : point_recd =
+  {x = p1.x + p2.x; y = p1.y + p2.y} ;;
 
 (* Recall the dot product from Lab 2. The dot product of two points
 (x1, y1) and (x2, y2) is the sum of the products of their x and y
@@ -70,7 +71,8 @@ product for points encoded as the point_pair type.
 ......................................................................*)
 
 let dot_product_pair (p1 : point_pair) (p2 : point_pair) : int =
-  failwith "dot_product_pair not implemented" ;;
+  let (x1, y1), (x2, y2) = p1, p2 in
+  x1 * x2 + y1 * y2 ;;
 
 (*......................................................................
 Exercise 4: Write a function dot_product_recd to compute the dot
@@ -78,7 +80,7 @@ product for points encoded as the point_recd type.
 ......................................................................*)
 
 let dot_product_recd (p1 : point_recd) (p2 : point_recd) : int =
-  failwith "dot_product_recd not implemented" ;;
+  p1.x * p2.x + p1.y * p2.y ;;
 
 (* Converting between the pair and record representations of points
 
@@ -92,16 +94,16 @@ Exercise 5: Write a function point_pair_to_recd that converts a
 point_pair to a point_recd.
 ......................................................................*)
 
-let point_pair_to_recd =
-  fun _ -> failwith "point_pair_to_recd not implemented" ;;
+let point_pair_to_recd ((a,b): point_pair): point_recd =
+  { x = a ; y = b} ;;
 
 (*......................................................................
 Exercise 6: Write a function point_recd_to_pair that converts a
 point_recd to a point_pair.
 ......................................................................*)
 
-let point_recd_to_pair =
-  fun _ -> failwith "point_recd_to_pair not implemented" ;;
+let point_recd_to_pair (a: point_recd): point_pair=
+  (a.x,a.y) ;;
    
 (*======================================================================
 Part 2: A simple database of records
@@ -147,10 +149,13 @@ For example:
      {name = "Sandy"; id = 993855891; course = "cs51"}]
 ......................................................................*)
 
-let transcript (enrollments : enrollment list)
+let rec transcript (enrollments : enrollment list)
                (student : int)
              : enrollment list =
-  failwith "transcript not implemented" ;;
+match enrollments with
+| [] -> []
+| hd :: tl -> if hd.id = student then hd :: transcript tl student
+           else transcript tl student ;;
   
 (*......................................................................
 Exercise 8: Define a function called ids that takes an enrollment
@@ -164,8 +169,12 @@ For example:
     - : int list = [482958285; 603858772; 993855891]
 ......................................................................*)
 
-let ids (enrollments: enrollment list) : int list =
-  failwith "ids not implemented" ;;
+let rec ids (enrollments: enrollment list) : int list =
+  let lst =
+  match enrollments with 
+  | [] -> []
+  | hd :: tl -> hd.id :: ids tl 
+  in List.sort_uniq (fun x y -> if x > y then 1 else 0) lst ;;
   
 (*......................................................................
 Exercise 9: Define a function called verify that determines whether all
@@ -229,8 +238,11 @@ should be as polymorphic as possible?
 Now write the function.
 ......................................................................*)
    
-let partition =
-  fun _ -> failwith "partition not implemented" ;;
+let rec partition (f : 'a -> 'b) (lst : 'a list) : 'a list * 'a list =
+  match lst with
+  | [] -> [], []
+  | hd :: tl -> if f hd then hd :: fst (partition f tl), snd (partition f tl) 
+                else fst (partition f tl), hd :: snd (partition f tl) ;;
 
 (*......................................................................
 Exercise 12: We can think of function application itself as a
