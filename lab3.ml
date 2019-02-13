@@ -210,10 +210,8 @@ worry about explicitly handling the anomalous case when the two lists
 are of different lengths.)
 ......................................................................*)
 
-let rec zip (x : int list) (y : int list) : (int * int) list =
-  match x, y with
-  | [], [] -> []
-  | xhd :: xtl, yhd :: ytl -> (xhd, yhd) :: (zip xtl ytl) ;;
+let zip =
+  fun _ -> failwith "zip not implemented" ;;
 
 (*......................................................................
 Exercise 11: Partitioning a list -- Given a boolean function, say
