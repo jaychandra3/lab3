@@ -186,8 +186,20 @@ For example:
 - : bool = false
 ......................................................................*)
 
-let verify (enrollments : enrollment list) : bool =
-  failwith "verify not implemented" ;;
+let rec iterate (lst : enrollment list) (str: string) (idd: int): bool = 
+match lst with 
+| [] -> true 
+| hd :: tl -> if hd.name = str then
+                if hd.id = idd then
+                  iterate tl str idd
+                else false
+              else iterate tl str idd ;;
+
+
+let rec verify (enrollments : enrollment list) : bool =
+  match enrollments with
+  | [] -> true
+  | hd :: tl -> if iterate tl hd.name hd.id then false else verify tl ;;
 
 (*======================================================================
 Part 3: Polymorphism
@@ -210,8 +222,10 @@ worry about explicitly handling the anomalous case when the two lists
 are of different lengths.)
 ......................................................................*)
 
-let zip =
-  fun _ -> failwith "zip not implemented" ;;
+let rec zip (a : 'a list) (b : 'b list) : ('a * 'b) list =
+  match a, b with
+  | [], [] -> []
+  | xhd :: xtl, yhd :: ytl -> (xhd, yhd) :: (zip xtl ytl) ;;
 
 (*......................................................................
 Exercise 11: Partitioning a list -- Given a boolean function, say
@@ -283,5 +297,5 @@ Given the above, what should the type of the function "apply" be?
 Now write the function.
 ......................................................................*)
 
-let apply =
-  fun _ -> failwith "apply not implemented" ;;
+let apply (f: 'a -> 'a) (x: 'a): 'a  =
+  f x ;;
