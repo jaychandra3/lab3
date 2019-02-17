@@ -169,12 +169,8 @@ For example:
     - : int list = [482958285; 603858772; 993855891]
 ......................................................................*)
 
-let rec ids (enrollments: enrollment list) : int list =
-  let lst =
-  match enrollments with 
-  | [] -> []
-  | hd :: tl -> hd.id :: ids tl 
-  in List.sort_uniq (fun x y -> if x > y then 1 else 0) lst ;;
+let ids (enrollments: enrollment list) : int list = 
+  List.sort_uniq (compare)(List.map (fun student -> student.id) enrollments) ;;
   
 (*......................................................................
 Exercise 9: Define a function called verify that determines whether all
@@ -186,20 +182,12 @@ For example:
 - : bool = false
 ......................................................................*)
 
-let rec iterate (lst : enrollment list) (str: string) (idd: int): bool = 
-match lst with 
-| [] -> true 
-| hd :: tl -> if hd.name = str then
-                if hd.id = idd then
-                  iterate tl str idd
-                else false
-              else iterate tl str idd ;;
+let names (enrollments : enrollment list) : string list =
+List.sort_uniq (compare)(List.map (fun { name; _ } -> name) enrollments) ;;
 
-
-let rec verify (enrollments : enrollment list) : bool =
-  match enrollments with
-  | [] -> true
-  | hd :: tl -> if iterate tl hd.name hd.id then false else verify tl ;;
+let verify (enrollments : enrollment list) : bool =
+List.for_all (fun l -> List.length l = 1)
+(List.map(fun student -> names (transcript enrollments student))(ids enrollments)) ;;
 
 (*======================================================================
 Part 3: Polymorphism
